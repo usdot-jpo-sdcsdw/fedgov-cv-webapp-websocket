@@ -1,0 +1,8 @@
+[{
+	"systemName": "SDC 2.3",
+	"brokerURL": "failover:(ssl://10.61.152.211:61616)",
+	"truststoreFile": "@truststores/truststore.with_go_daddy_and_pubsub_DE_certs@",
+	"truststorePassword": "@webfragment-websocket/store.password@",
+	"topic": "cv.sitdata"
+}]
+

@@ -1,0 +1,12 @@
+[{
+    "systemName": "SDW 2.3",
+    "host": "10.93.168.134",
+    "port": 27017,
+    "database": "cvdb"
+},
+{
+    "systemName": "SDPC 2.3",
+    "host": "10.168.217.251",
+    "port": 27017,
+    "database": "cvdb"
+}]

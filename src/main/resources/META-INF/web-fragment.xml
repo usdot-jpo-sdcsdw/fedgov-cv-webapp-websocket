@@ -1,0 +1,62 @@
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+              version="3.0"
+              metadata-complete="true">
+
+	<servlet>
+		<servlet-name>WebSocket</servlet-name>
+		<servlet-class>gov.usdot.cv.websocket.server.WebSocketServlet</servlet-class>
+		<init-param>
+            <param-name>maxIdleTime</param-name>
+            <param-value>1800000</param-value>
+        </init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WebSocket</servlet-name>
+		<url-pattern>/websocket/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>MongoProvider</servlet-name>
+		<servlet-class>gov.usdot.cv.websocket.mongo.MongoProviderServlet</servlet-class>
+		<init-param>
+        	<param-name>mongoConfigFile</param-name>
+        	<param-value>config/mongo.json</param-value>
+        </init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MongoProvider</servlet-name>
+		<url-pattern>/mongoprovider/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>JMSProvider</servlet-name>
+		<servlet-class>gov.usdot.cv.websocket.jms.JMSProviderServlet</servlet-class>
+		<init-param>
+        	<param-name>jmsConfigFile</param-name>
+        	<param-value>config/jms.json</param-value>
+        </init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JMSProvider</servlet-name>
+		<url-pattern>/jmsprovider/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>DepositProvider</servlet-name>
+		<servlet-class>gov.usdot.cv.websocket.deposit.DepositProviderServlet</servlet-class>
+		<init-param>
+        	<param-name>depositConfigFile</param-name>
+        	<param-value>config/deposit.json</param-value>
+        </init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DepositProvider</servlet-name>
+		<url-pattern>/depositprovider/*</url-pattern>
+	</servlet-mapping>
+	
+</web-fragment>

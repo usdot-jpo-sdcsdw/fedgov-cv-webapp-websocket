@@ -10,14 +10,17 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
-import com.oss.asn1.Coder;
-import com.oss.asn1.DecodeFailedException;
-import com.oss.asn1.DecodeNotSupportedException;
-
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.PerXerCodec;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.CodecException;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.RawPerData;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.RawXerData;
 import gov.usdot.asn1.generated.j2735.J2735;
 import gov.usdot.asn1.j2735.J2735Util;
 import gov.usdot.cv.websocket.WebSocketClient;
 import gov.usdot.cv.websocket.WebSocketSSLHelper;
+import gov.usdot.cv.websocket.mongo.MongoConfig;
+import gov.usdot.cv.websocket.mongo.MongoDepositor;
 import gov.usdot.cv.websocket.server.WebSocketEventListener;
 import gov.usdot.cv.websocket.server.WebSocketServer;
 import net.sf.json.JSONObject;
@@ -35,44 +38,24 @@ public class DepositEventListener implements WebSocketEventListener {
 	private final static String ENCODE_TYPE_BASE64 = "base64";
 	private final static String ENCODE_TYPE_UPER = "uper";
 	
-	private List<DepositConfig> depositConfigs;
-	private Map<String, WebSocketClient> depositClientMap = new HashMap<String, WebSocketClient>();
-	private Coder coder;
+	private List<MongoConfig> depositConfigs;
+	private Map<String, MongoDepositor> depositClientMap = new HashMap<String, MongoDepositor>();
 	
-	public DepositEventListener(List<DepositConfig> depositConfigs) {
+	public DepositEventListener(List<MongoConfig> depositConfigs) {
 		this.depositConfigs = depositConfigs;
 	}
 	
 	public void connect() {
-		try {
-			J2735.initialize();
-			coder = J2735.getPERUnalignedCoder();
-		} catch (Exception e) {
-			logger.error("Failed initialize J2735 environment: ", e);
-		}
-		for (DepositConfig config: depositConfigs) {
-			try {
-				SslContextFactory sslContextFactory = null;
-				if (config.websocketURL.startsWith("wss")) {
-					sslContextFactory = WebSocketSSLHelper.buildClientSslContextFactory(config.keystoreFile, config.keystorePassword);
-				}
-				WebSocketClient depositClient = new WebSocketClient(config.websocketURL, sslContextFactory);
-				
-				logger.info("Opening WebSocket connection to: " + config.websocketURL);
-				depositClient.connect();
-				depositClientMap.put(config.systemName, depositClient);
-			} catch (Exception e) {
-				logger.error("Failed to connect WebSocket Server, config: " + config, e);
-			}
+		for (MongoConfig config: depositConfigs) {
+			depositClientMap.put(config.systemName, new MongoDepositor(config));
 		}
 	}
 	
 	public void close() {
-		for (WebSocketClient depositClient: depositClientMap.values()) {
+		for (MongoDepositor depositClient: depositClientMap.values()) {
 			depositClient.close();
 		}
 		depositClientMap.clear();
-		J2735.deinitialize();
 	}
 	
 	public void onMessage(String websocketID, String message) {
@@ -83,14 +66,12 @@ public class DepositEventListener implements WebSocketEventListener {
 			try {
 				validateMessage(json);
 				String systemName = json.getString(SYSTEM_NAME);
-				WebSocketClient wsClient = depositClientMap.get(systemName);
+				MongoDepositor wsClient = depositClientMap.get(systemName);
 				if (wsClient != null) {
-					wsClient.send(message);
-					// TODO need to wait from response from server?
-					WebSocketServer.sendMessage(websocketID, "DEPOSITED:1");
+				    wsClient.deposit(json);
 				} else {
 					// validateMessage should always catch this, but just in case
-					logger.error("No WebSocketClient for systemDepositName: " + systemName);
+					logger.error("No MongoDepositor for systemDepositName: " + systemName);
 				}
 			} catch (DepositException de) {
 				logger.error("Invalid deposit message ", de);
@@ -140,10 +121,8 @@ public class DepositEventListener implements WebSocketEventListener {
 
 			if (bytes != null) {
 				try {
-					J2735Util.decode(coder, bytes);
-				} catch (DecodeFailedException e) {
-					errorMsg.append("Failed to decode message: " + e.toString());
-				} catch (DecodeNotSupportedException e) {
+					PerXerCodec.guessPerToXer(Asn1Types.getAllTypes(), bytes, RawPerData.unformatter, RawXerData.formatter);
+				} catch (CodecException e) {
 					errorMsg.append("Failed to decode message: " + e.toString());
 				}
 			}

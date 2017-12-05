@@ -1,5 +1,6 @@
 package gov.usdot.cv.websocket.deposit;
 
+import gov.usdot.cv.websocket.mongo.MongoConfig;
 import gov.usdot.cv.websocket.server.WebSocketServer;
 import gov.usdot.cv.websocket.server.utils.ConfigUtils;
 
@@ -24,7 +25,7 @@ public class DepositProviderServlet extends HttpServlet {
 		super.init();
 		try {
 			String mongoConfigFile = getInitParameter("depositConfigFile");
-			List<DepositConfig> configList = ConfigUtils.loadConfigBeanList(mongoConfigFile, DepositConfig.class);
+			List<MongoConfig> configList = ConfigUtils.loadConfigBeanList(mongoConfigFile, MongoConfig.class);
 			logger.info("Using " + configList);
 			
 			depositListener = new DepositEventListener(configList);

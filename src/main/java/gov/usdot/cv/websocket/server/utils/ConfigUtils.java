@@ -29,7 +29,14 @@ public class ConfigUtils {
 			configBean = mapper.readValue(is, genericType);
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				logger.warn(e.getMessage());
+			}
 		}
+		
 		return configBean;
 	}
 	
@@ -44,6 +51,12 @@ public class ConfigUtils {
 				mapper.getTypeFactory().constructCollectionType(List.class, genericType));
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				logger.warn(e.getMessage());
+			}
 		}
 		return configBeanList;
 	}
@@ -51,21 +64,21 @@ public class ConfigUtils {
 	public static InputStream getFileAsStream(String fileName)  {
 		InputStream is = null;
 		File f = new File(fileName);
-		logger.info("Attempting to find file " + fileName);
+		logger.info("Attempting to find file " + fileName + "(" + f.getAbsolutePath() + ")");
 		if (f.exists()) {
 			logger.debug("Loading file from the file system " + f.getAbsolutePath());
 			try {
 				is = new FileInputStream(f);
 			} catch (FileNotFoundException e) {
 				logger.warn(e);
-			} finally {
+			} /*finally {
 				if ( is != null ) {
 					try {
 						is.close();
 					} catch (IOException e) {
 					}
 				}
-			}
+			}*/
 		} else {
 			logger.debug("File not found on file system, checking on classpath...");
 			is = ConfigUtils.class.getClassLoader().getResourceAsStream(fileName);

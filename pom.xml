@@ -1,15 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>gov.usdot</groupId>
 	<artifactId>fedgov-cv-webapp-websocket</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>WebSocket Server WebApp</name>
 	<packaging>war</packaging>
-	<parent>
+	<!--<parent>
 		<groupId>gov.usdot</groupId>
 		<artifactId>fedgov-cv-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../fedgov-cv-parent/pom.xml</relativePath>
-	</parent>
+	</parent> -->
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -17,18 +19,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>gov.usdot</groupId>
-			<artifactId>fedgov-cv-asn1</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>gov.usdot</groupId>
 			<artifactId>fedgov-cv-common</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>gov.usdot</groupId>
-			<artifactId>fedgov-cv-private-resources</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+		    <groupId>gov.usdot</groupId>
+		    <artifactId>fedgov-cv-datasink-mongodb</artifactId>
+		    <version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>gov.usdot</groupId>
@@ -113,9 +110,29 @@
 			<artifactId>ezmorph</artifactId>
 			<version>1.0.6</version>
 		</dependency>
-	</dependencies>
-	<dependencyManagement>
-		<dependencies>
+		          <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>9.3.11.v20160721</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.6.4</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.6.4</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 		    <dependency>
 		      <groupId>org.apache.maven.plugins</groupId>
 		      <artifactId>maven-war-plugin</artifactId>
@@ -151,8 +168,13 @@
 				<artifactId>jetty-servlets</artifactId>
 				<version>9.3.11.v20160721</version>
 			</dependency>
+			<dependency>
+			<groupId>gov.dot.its.jpo.sdcsdw</groupId>
+  <artifactId>per-xer-codec</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  </dependency>
+			
 		</dependencies>
-	</dependencyManagement>
     <build>
         <plugins>
             <plugin>

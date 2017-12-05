@@ -1,6 +1,5 @@
-<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
               version="3.0"
               metadata-complete="true">
 
@@ -30,7 +29,7 @@
 		<servlet-name>MongoProvider</servlet-name>
 		<url-pattern>/mongoprovider/*</url-pattern>
 	</servlet-mapping>
-	
+	<!-- 
 	<servlet>
 		<servlet-name>JMSProvider</servlet-name>
 		<servlet-class>gov.usdot.cv.websocket.jms.JMSProviderServlet</servlet-class>
@@ -44,7 +43,8 @@
 		<servlet-name>JMSProvider</servlet-name>
 		<url-pattern>/jmsprovider/*</url-pattern>
 	</servlet-mapping>
-	
+	-->
+	<!--
 	<servlet>
 		<servlet-name>DepositProvider</servlet-name>
 		<servlet-class>gov.usdot.cv.websocket.deposit.DepositProviderServlet</servlet-class>
@@ -58,5 +58,5 @@
 		<servlet-name>DepositProvider</servlet-name>
 		<url-pattern>/depositprovider/*</url-pattern>
 	</servlet-mapping>
-	
-</web-fragment>
+	-->
+</web-app>

@@ -1,15 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>fedgov-cv-webfragment-websocket</artifactId>
-	<name>WebSocket Server WebFragment</name>
-	<packaging>jar</packaging>
+	<artifactId>fedgov-cv-webapp-websocket</artifactId>
+	<name>WebSocket Server WebApp</name>
+	<packaging>war</packaging>
 	<parent>
 		<groupId>gov.usdot</groupId>
 		<artifactId>fedgov-cv-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../fedgov-cv-parent/pom.xml</relativePath>
 	</parent>
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>gov.usdot</groupId>
@@ -56,6 +60,7 @@
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
 			<version>2.3</version>
+			<classifier>jdk15</classifier>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -111,6 +116,11 @@
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
+		    <dependency>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-war-plugin</artifactId>
+		      <version>3.2.0</version>
+		    </dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-util</artifactId>
@@ -143,5 +153,19 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<description>A simple WebSocket Server implemented as a WebFragment</description>
+    <build>
+        <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <version>3.2.0</version>
+            </plugin>
+            <plugin>
+			  <groupId>org.eclipse.jetty</groupId>
+			  <artifactId>jetty-maven-plugin</artifactId>
+			  <version><!--9.3.22.v20171030-->9.3.11.v20160721</version>
+			</plugin>
+        </plugins>
+    </build>
+	<description>A simple WebSocket Server implemented as a WebApp</description>
 </project>

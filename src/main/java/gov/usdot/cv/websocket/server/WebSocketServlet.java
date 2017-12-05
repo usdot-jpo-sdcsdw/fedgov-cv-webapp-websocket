@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
@@ -17,9 +18,14 @@ import gov.usdot.cv.websocket.server.utils.TestEventListener;
 public class WebSocketServlet extends org.eclipse.jetty.websocket.servlet.WebSocketServlet implements WebSocketCreator {
 
 	private static final long serialVersionUID = 6777605077044031611L;
+	
+	private static final Logger logger = Logger.getLogger(WebSocketServlet.class
+			.getName());
 
 	@Override
 	public void configure(WebSocketServletFactory factory) {
+		logger.info("WebSockerServlet is actually being used");
+		
 		factory.setCreator(this);
 		
 		TestEventListener listener = new TestEventListener();

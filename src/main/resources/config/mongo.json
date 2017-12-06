@@ -2,11 +2,6 @@
     "systemName": "SDW 2.3",
     "host": "localhost",
     "port": 27017,
-    "database": "cvdb"
-},
-{
-    "systemName": "SDPC 2.3",
-    "host": "localhost",
-    "port": 27017,
-    "database": "cvdb"
+    "database": "cvdb",
+    "collectionName": "travelerInformation"
 }]

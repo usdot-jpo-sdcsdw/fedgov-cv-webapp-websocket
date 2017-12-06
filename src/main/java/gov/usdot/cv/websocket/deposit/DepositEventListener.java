@@ -13,10 +13,10 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.PerXerCodec;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.CodecException;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.PerData;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.PerDataUnformatter;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.RawPerData;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.RawXerData;
-import gov.usdot.asn1.generated.j2735.J2735;
-import gov.usdot.asn1.j2735.J2735Util;
 import gov.usdot.cv.websocket.WebSocketClient;
 import gov.usdot.cv.websocket.WebSocketSSLHelper;
 import gov.usdot.cv.websocket.mongo.MongoConfig;
@@ -47,7 +47,9 @@ public class DepositEventListener implements WebSocketEventListener {
 	
 	public void connect() {
 		for (MongoConfig config: depositConfigs) {
-			depositClientMap.put(config.systemName, new MongoDepositor(config));
+		    MongoDepositor depositor = new MongoDepositor(config);
+		    depositor.connect();
+			depositClientMap.put(config.systemName, depositor);
 		}
 	}
 	
@@ -108,6 +110,7 @@ public class DepositEventListener implements WebSocketEventListener {
 					append(", ").append(ENCODE_TYPE_BASE64).append(", ").append(ENCODE_TYPE_UPER);
 			}
 			
+			//PerDataUnformatter<String, ? extends PerData<String>> unformatter = null;
 			byte[] bytes = null;
 			if (encodeType.equalsIgnoreCase(ENCODE_TYPE_HEX) || encodeType.equalsIgnoreCase(ENCODE_TYPE_UPER)) {
 				try {
@@ -121,9 +124,10 @@ public class DepositEventListener implements WebSocketEventListener {
 
 			if (bytes != null) {
 				try {
-					PerXerCodec.guessPerToXer(Asn1Types.getAllTypes(), bytes, RawPerData.unformatter, RawXerData.formatter);
+					//PerXerCodec.guessPerToXer(Asn1Types.getAllTypes(), bytes, RawPerData.unformatter, RawXerData.formatter);
+					PerXerCodec.perToXer(Asn1Types.AdvisorySituationDataType, bytes, RawPerData.unformatter, RawXerData.formatter);
 				} catch (CodecException e) {
-					errorMsg.append("Failed to decode message: " + e.toString());
+					errorMsg.append("Failed to decode message: " + e);
 				}
 			}
 			

@@ -31,34 +31,34 @@ import com.mongodb.MongoException;
 
 public class MongoQueryRunner {
 
-	private static final Logger logger = Logger.getLogger(MongoQueryRunner.class
-			.getName());
-	
-	private static final Map<Integer, String> collectionLookup = new HashMap<Integer, String>();
-	private static final List<String> dateOperators = new ArrayList<String>();
-	private static final List<String> resultEncodings = new ArrayList<String>();
-	private static final int MAX_CONCURRENT_QUERIES = 5;
-	
-	// these must match the index names on each MongoDB collection
-	// in the mongo shell, run db.<collectionName>.getIndexes() to list the indexes
-	private static final String NO_SORT_INDEX_NAME = "region_2dsphere_createdAt_1";
-	private static final String CREATED_AT_SORT_INDEX_NAME = "createdAt_1";
-	private static final String REQUEST_ID_SORT_INDEX_NAME = "requestId_1_createdAt_1";
-	
-	static {
-		collectionLookup.put(154, "vehSitDataMessage");
-		collectionLookup.put(156, "travelerInformation");
-		collectionLookup.put(162, "intersectionSitData");
-		
-		dateOperators.add("GT");
-		dateOperators.add("GTE");
-		dateOperators.add("LT");
-		dateOperators.add("LTE");
-		
-		resultEncodings.add("hex");
-		resultEncodings.add("base64");
-		resultEncodings.add("full");
-	}
+    private static final Logger logger = Logger.getLogger(MongoQueryRunner.class
+                                                          .getName());
+                                                  
+    private static final Map<Integer, String> collectionLookup = new HashMap<Integer, String>();
+    private static final List<String> dateOperators = new ArrayList<String>();
+    private static final List<String> resultEncodings = new ArrayList<String>();
+    private static final int MAX_CONCURRENT_QUERIES = 5;
+  
+    // these must match the index names on each MongoDB collection
+    // in the mongo shell, run db.<collectionName>.getIndexes() to list the indexes
+    private static final String NO_SORT_INDEX_NAME = "region_2dsphere_createdAt_1";
+    private static final String CREATED_AT_SORT_INDEX_NAME = "createdAt_1";
+    private static final String REQUEST_ID_SORT_INDEX_NAME = "requestId_1_createdAt_1";
+  
+    static {
+      collectionLookup.put(154, "vehSitDataMessage");
+      collectionLookup.put(156, "travelerInformation");
+      collectionLookup.put(162, "intersectionSitData");
+      
+      dateOperators.add("GT");
+      dateOperators.add("GTE");
+      dateOperators.add("LT");
+      dateOperators.add("LTE");
+      
+      resultEncodings.add("hex");
+      resultEncodings.add("base64");
+      resultEncodings.add("full");
+    }
 	
 	private MongoConfig config;
 	private Mongo mongoClient;
@@ -396,7 +396,8 @@ public class MongoQueryRunner {
 			queryParams.append(" fieldNames: ").append(fieldNames);
 		}
 		
-		String collectionName = collectionLookup.get(json.getInt("dialogID"));
+		//String collectionName = collectionLookup.get(json.getInt("dialogID"));
+		String collectionName = config.collectionName;
 		DBCollection collection = database.getCollection(collectionName);
 		DBCursor cursor = (fieldNames == null) ? collection.find(query) : collection.find(query, fieldNames);
 		

@@ -21,13 +21,12 @@ import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
 
 import gov.usdot.cv.common.database.mongodb.MongoOptionsBuilder;
-import gov.usdot.cv.common.database.mongodb.dao.AbstractMongoDbDao;
 import gov.usdot.cv.mongodb.datasink.model.DataModel;
 import net.sf.json.JSONObject;
 
 public class MongoDepositor
 {
-    private static final Logger logger = Logger.getLogger(MongoQueryRunner.class
+    private static final Logger logger = Logger.getLogger(MongoDepositor.class
                                                           .getName());
                                                   
     private static final Object LOCK = new Object();
@@ -110,15 +109,15 @@ public class MongoDepositor
                 
                 WriteResult result = null;
                 if (model.getQuery() != null) {
-                    result = this.dao.upsert(model.getModelName(), query, doc);
+                    result = this.dao.upsert(config.collectionName, query, doc);
                 } else {
-                    result = this.dao.insert(model.getModelName(), doc);
+                    result = this.dao.insert(config.collectionName, doc);
                 }
                 
                 return true;
                 
             } catch (Exception ex) {
-                logger.error(String.format("Failed to store record into MongoDB. Message: %s", ex.getMessage()), ex);
+                logger.error(String.format("Failed to store record into MongoDB. Message: %s", ex.toString()), ex);
             } finally {
                 retries--;
             }

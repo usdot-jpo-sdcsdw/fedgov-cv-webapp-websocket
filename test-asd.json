@@ -1,0 +1,28 @@
+[
+{
+  "dialogID":"advSitDataDep",
+  "seqID" : "data",
+  "groupID" : "00000000",
+  "requestID" : "ffffffff",
+  "serviceRegion" :
+  {
+    "nwCorner" :
+    {
+        "lat" : 0,
+        "long" : 0
+    },
+    "seCorner" :
+    {
+       "lat" : 0,
+       "long" : 0
+    }
+  },
+  "asdmDetails" : 
+  {
+     "asdmID" : "00000000",
+     "asdmType" : "tim",
+     "distType" : "10",
+     "advisoryMessage" : "DEADBEEF"
+  }
+},
+"04400000000FFFFFFFF0D693A401AD2747FC35A4E9006B49D1FF00000000108004DEADBEEF"]

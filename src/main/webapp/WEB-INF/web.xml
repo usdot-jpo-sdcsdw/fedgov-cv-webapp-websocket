@@ -44,13 +44,13 @@
 		<url-pattern>/jmsprovider/*</url-pattern>
 	</servlet-mapping>
 	-->
-	<!--
+	
 	<servlet>
 		<servlet-name>DepositProvider</servlet-name>
 		<servlet-class>gov.usdot.cv.websocket.deposit.DepositProviderServlet</servlet-class>
 		<init-param>
         	<param-name>depositConfigFile</param-name>
-        	<param-value>config/deposit.json</param-value>
+        	<param-value>config/mongo.json</param-value>
         </init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -58,5 +58,4 @@
 		<servlet-name>DepositProvider</servlet-name>
 		<url-pattern>/depositprovider/*</url-pattern>
 	</servlet-mapping>
-	-->
 </web-app>

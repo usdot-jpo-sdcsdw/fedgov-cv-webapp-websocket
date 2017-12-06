@@ -11,8 +11,9 @@ public class MongoConfig {
 	public int connectionTimeoutMs;
 	public String ttlUnit;
     public int ttlValue;
-    public String ttlFieldName;
+    public String ttlFieldName = "expireAt";
     public boolean ignoreMessageTTL;
+    public String collectionName;
     
 	public MongoConfig() {
 		super();
@@ -34,6 +35,9 @@ public class MongoConfig {
 		                          .append(", ")
 		                          .append("database=")
 		                          .append(database)
+		                          .append(", ")
+		                          .append("collectionName=")
+		                          .append(collectionName)
 		                          .append(", ")
 		                          .append("autoConnectRetry=")
 		                          .append(autoConnectRetry)

@@ -1,6 +1,5 @@
 package gov.usdot.cv.websocket.mongo;
 
-import gov.usdot.cv.common.util.Syslogger;
 import gov.usdot.cv.websocket.server.WebSocketEventListener;
 import gov.usdot.cv.websocket.server.WebSocketServer;
 
@@ -53,7 +52,7 @@ public class MongoQueryEventListener implements WebSocketEventListener {
 				String systemName = json.getString(SYSTEM_NAME);
 				if (queryRunnerMap.containsKey(systemName)) {
 					queryRunnerMap.get(systemName).runQuery(websocketID, json, message);
-					Syslogger.getInstance().log(SYS_LOG_ID, 
+					logger.info(
 						String.format("Processed query for websocketID %s, query %s", websocketID, json.toString()));
 				} else {
 					String errorMsg = "Invalid systemQueryName: " + systemName + 

@@ -12,7 +12,6 @@ import com.mongodb.WriteResult;
 
 import gov.usdot.cv.common.database.mongodb.MongoClientBuilder;
 import gov.usdot.cv.common.database.mongodb.dao.AbstractMongoDbDao;
-import gov.usdot.cv.common.database.mongodb.dao.InsertSitDataDao;
 
 public class CloseableInsertSitDataDao extends  AbstractMongoDbDao
 {

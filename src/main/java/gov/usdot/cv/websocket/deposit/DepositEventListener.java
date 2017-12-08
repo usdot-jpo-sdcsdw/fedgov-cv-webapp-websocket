@@ -71,6 +71,7 @@ public class DepositEventListener implements WebSocketEventListener {
 				MongoDepositor wsClient = depositClientMap.get(systemName);
 				if (wsClient != null) {
 				    wsClient.deposit(json);
+				    WebSocketServer.sendMessage(websocketID, "DEPOSITED:1");
 				} else {
 					// validateMessage should always catch this, but just in case
 					logger.error("No MongoDepositor for systemDepositName: " + systemName);

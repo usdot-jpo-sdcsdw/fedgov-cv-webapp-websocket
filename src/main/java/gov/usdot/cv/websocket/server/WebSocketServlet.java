@@ -24,8 +24,6 @@ public class WebSocketServlet extends org.eclipse.jetty.websocket.servlet.WebSoc
 
 	@Override
 	public void configure(WebSocketServletFactory factory) {
-		logger.info("WebSockerServlet is actually being used");
-		
 		factory.setCreator(this);
 		
 		TestEventListener listener = new TestEventListener();

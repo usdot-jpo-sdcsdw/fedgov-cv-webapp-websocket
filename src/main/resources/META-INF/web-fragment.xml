@@ -1,4 +1,4 @@
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               version="3.0"
               metadata-complete="true">
@@ -58,4 +58,4 @@
 		<servlet-name>DepositProvider</servlet-name>
 		<url-pattern>/depositprovider/*</url-pattern>
 	</servlet-mapping>
-</web-app>
+</web-fragment>

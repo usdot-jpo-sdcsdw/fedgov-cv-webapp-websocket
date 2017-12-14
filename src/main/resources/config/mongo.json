@@ -1,6 +1,6 @@
 [{
     "systemName": "SDW 2.3",
-    "host": "localhost",
+    "host": "mymongo",
     "port": 27017,
     "database": "cvdb",
     "collectionName": "travelerInformation"

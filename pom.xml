@@ -5,7 +5,7 @@
 	<artifactId>fedgov-cv-webapp-websocket</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>WebSocket Server WebApp</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<!--<parent>
 		<groupId>gov.usdot</groupId>
 		<artifactId>fedgov-cv-parent</artifactId>
@@ -166,10 +166,10 @@
 				<version>9.3.11.v20160721</version>
 			</dependency>
 			<dependency>
-			<groupId>gov.dot.its.jpo.sdcsdw</groupId>
-  <artifactId>per-xer-codec</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  </dependency>
+			    <groupId>gov.dot.its.jpo.sdcsdw</groupId>
+			    <artifactId>per-xer-codec</artifactId>
+			    <version>0.0.1-SNAPSHOT</version>
+		    </dependency>
 			
 		</dependencies>
     <build>

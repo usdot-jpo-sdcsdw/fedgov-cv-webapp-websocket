@@ -15,7 +15,7 @@ import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.DocumentXerData;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class GeoJsonExtractorTest
+public class GeoJsonBuilderTest
 {
 
     private static final String testHexPer = "44400000000CB7605B26283B90A7148D2B0A89C49F8A85A7763BFE5BB02D92107E1C0C6F7E2C0C6F0C20700BC003EB6E1A0F261D93846D600000000001EEEBB360603D4E7C8A5A2A72E2D933D3AAAA200007E175AEB002C060FF058B7E2800B8010A9CF914B454E5C5B267A60AF3555516AAAA119C8A73E452D1539716C99E9807F10C00007D1EEEBB3600"; 
@@ -62,11 +62,12 @@ public class GeoJsonExtractorTest
     @Test
     public void testBuildRegionFromAsdXml() throws Exception
     {
-        
-        
         Document xerDocument = PerXerCodec.perToXer(Asn1Types.AdvisorySituationDataType, testHexPer, HexPerData.unformatter, DocumentXerData.formatter);
         
-        JSONObject region = GeoJsonExtractor.buildRegionFromAsdXml(xerDocument);
+        JSONObject asdObject = new JSONObject();
+        AsdCompleteXerParser.unpackAsdXer(asdObject, xerDocument);
+        
+        JSONObject region = GeoJsonBuilder.buildGeoJson(asdObject);
         
         assertEquals(expectedRegion, region);
     }

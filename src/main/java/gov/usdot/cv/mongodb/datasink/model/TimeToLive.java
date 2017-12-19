@@ -31,6 +31,11 @@ public enum TimeToLive {
         }
     }
     
+    public int getCode()
+    {
+        return code;
+    }
+    
     public Date getExpiration() {
         Calendar cal = Calendar.getInstance();
         if (this.code == 0 || 

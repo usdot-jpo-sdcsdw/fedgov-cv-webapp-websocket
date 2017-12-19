@@ -22,10 +22,14 @@ import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
 
 import gov.usdot.cv.common.database.mongodb.MongoOptionsBuilder;
+import gov.usdot.cv.kluge.AsdCompleteXerParser;
+import gov.usdot.cv.kluge.GeoJsonBuilder;
 import gov.usdot.cv.kluge.GeoJsonExtractor;
 import gov.usdot.cv.kluge.TimeExtractor;
+import gov.usdot.cv.kluge.XerJsonParserException;
 import gov.usdot.cv.mongodb.datasink.model.DataModel;
 import gov.usdot.cv.mongodb.datasink.model.TimeToLive;
+import gov.usdot.cv.websocket.deposit.DepositException;
 import net.sf.json.JSONObject;
 
 public class MongoDepositor
@@ -93,11 +97,11 @@ public class MongoDepositor
         dao.close();
     }
     
-    public boolean deposit(JSONObject json, Document xer) {
+    public boolean deposit(JSONObject json, Document xer) throws DepositException {
         int retries = 3;
         while (retries >= 0) {
             try {
-                JSONObject regionObject = GeoJsonExtractor.buildRegionFromAsdXml(xer);
+                /*JSONObject regionObject = GeoJsonExtractor.buildRegionFromAsdXml(xer);
                 if (regionObject != null) {
                     logger.debug("Created GeoJSON object: " + regionObject);
                     json.put(GEOJSON_FIELD_NAME, regionObject);    
@@ -111,7 +115,16 @@ public class MongoDepositor
                     json.put(DataModel.TIME_TO_LIVE_KEY, timeToLive.ordinal());
                 } else {
                     logger.warn("Could not get TTL");
+                }*/
+                
+                try {
+                    AsdCompleteXerParser.unpackAsdXer(json, xer);
+                } catch (XerJsonParserException ex) {
+                    throw new DepositException(ex);
                 }
+                
+                json.put(GEOJSON_FIELD_NAME, GeoJsonBuilder.buildGeoJson(json));
+                
                 
                 DataModel model = new DataModel(
                     json,
@@ -137,6 +150,8 @@ public class MongoDepositor
                 
                 return true;
                 
+            } catch (DepositException ex) {
+                throw ex;
             } catch (Exception ex) {
                 logger.error(String.format("Failed to store record into MongoDB. Message: %s", ex.toString()), ex);
             } finally {

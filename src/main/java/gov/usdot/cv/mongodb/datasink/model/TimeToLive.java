@@ -1,5 +1,7 @@
 package gov.usdot.cv.mongodb.datasink.model;
 
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -55,6 +57,18 @@ public enum TimeToLive {
             default : return null;
         }
     }
+    
+    public static TimeToLive fromString(String code) {
+        for(TimeToLive ttl : TimeToLive.values()) {
+            if (ttl.toString().equalsIgnoreCase(code)) {
+                return ttl;
+            }
+        }
+        
+        return null;
+    }
+    
+    
     
     public static Date getExpiration(int ttlValue, String ttlUnit) {
         Calendar cal = Calendar.getInstance();

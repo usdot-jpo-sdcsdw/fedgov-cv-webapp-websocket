@@ -78,9 +78,9 @@ public class MongoQueryRunner {
 			database = mongoClient.getDB(config.database);
 			connected = true;
 			logger.info("Connected to the " + config.systemName + " MongoDB " + config.host + ":" + config.port);
-		} catch (UnknownHostException e) {
+		} /*catch (UnknownHostException e) {
 			logger.error("Failed to connect to MongoDB", e);
-		} catch (MongoException e) {
+		} */ catch (MongoException e) {
 			logger.error("Failed to connect to MongoDB", e);
 		}
 	}

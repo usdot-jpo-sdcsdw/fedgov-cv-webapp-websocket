@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -21,7 +22,10 @@ import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
 
 import gov.usdot.cv.common.database.mongodb.MongoOptionsBuilder;
+import gov.usdot.cv.kluge.GeoJsonExtractor;
+import gov.usdot.cv.kluge.TimeExtractor;
 import gov.usdot.cv.mongodb.datasink.model.DataModel;
+import gov.usdot.cv.mongodb.datasink.model.TimeToLive;
 import net.sf.json.JSONObject;
 
 public class MongoDepositor
@@ -43,7 +47,8 @@ public class MongoDepositor
     private static final String NO_SORT_INDEX_NAME = "region_2dsphere_createdAt_1";
     private static final String CREATED_AT_SORT_INDEX_NAME = "createdAt_1";
     private static final String REQUEST_ID_SORT_INDEX_NAME = "requestId_1_createdAt_1";
- 
+    private static final String GEOJSON_FIELD_NAME = "region";
+    
     
     static {
         collectionLookup.put(154, "vehSitDataMessage");
@@ -88,10 +93,26 @@ public class MongoDepositor
         dao.close();
     }
     
-    public boolean deposit(JSONObject json) {
+    public boolean deposit(JSONObject json, Document xer) {
         int retries = 3;
         while (retries >= 0) {
             try {
+                JSONObject regionObject = GeoJsonExtractor.buildRegionFromAsdXml(xer);
+                if (regionObject != null) {
+                    logger.debug("Created GeoJSON object: " + regionObject);
+                    json.put(GEOJSON_FIELD_NAME, regionObject);    
+                } else {
+                    logger.warn("GeoJSON object failed to build");
+                }
+                
+                TimeToLive timeToLive = TimeExtractor.extractTimeToLiveCode(xer);
+                if (timeToLive != null) {
+                    logger.debug("Got TTL of " + timeToLive);
+                    json.put(DataModel.TIME_TO_LIVE_KEY, timeToLive.ordinal());
+                } else {
+                    logger.warn("Could not get TTL");
+                }
+                
                 DataModel model = new DataModel(
                     json,
                     config.ttlFieldName, 

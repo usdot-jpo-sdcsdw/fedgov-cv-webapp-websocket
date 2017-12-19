@@ -37,6 +37,7 @@ public class MongoQueryEventListener implements WebSocketEventListener {
 	}
 	
 	public void close() {
+	    logger.debug("Query runner is closing");
 		for (MongoQueryRunner queryRunner: queryRunnerMap.values()) {
 			queryRunner.close();
 		}
@@ -65,7 +66,9 @@ public class MongoQueryEventListener implements WebSocketEventListener {
 				logger.error(errorMsg);
 				WebSocketServer.sendMessage(websocketID, "ERROR: " + errorMsg);
 			}
-		}
+		} else {
+            logger.debug("Query runner ignoring: " + message);
+        }
 	}
 
 	public void onOpen(String websocketID) {
@@ -73,8 +76,8 @@ public class MongoQueryEventListener implements WebSocketEventListener {
 	}
 
 	public void onClose(String websocketID) {
-		for (MongoQueryRunner queryRunner: queryRunnerMap.values()) {
+		/*for (MongoQueryRunner queryRunner: queryRunnerMap.values()) {
 			queryRunner.killRunningQueries(websocketID);
-		}
+		}*/
 	}
 }

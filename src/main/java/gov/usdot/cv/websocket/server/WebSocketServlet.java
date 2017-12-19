@@ -26,6 +26,8 @@ public class WebSocketServlet extends org.eclipse.jetty.websocket.servlet.WebSoc
 	public void configure(WebSocketServletFactory factory) {
 		factory.setCreator(this);
 		
+		logger.info("THIS TEXT SHOULD BE SEEN");
+		
 		TestEventListener listener = new TestEventListener();
 		WebSocketServer.registerEventListener(listener);
 	}

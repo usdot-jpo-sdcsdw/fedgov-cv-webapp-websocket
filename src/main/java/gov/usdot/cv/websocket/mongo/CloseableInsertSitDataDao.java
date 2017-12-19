@@ -8,6 +8,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoOptions;
+import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
 import gov.usdot.cv.common.database.mongodb.MongoClientBuilder;
@@ -35,7 +36,7 @@ public class CloseableInsertSitDataDao extends  AbstractMongoDbDao
     */
    public WriteResult insert(String collectionName, DBObject doc) {
        DBCollection collection = get(collectionName);
-       return collection.insert(doc);
+       return collection.insert(WriteConcern.ACKNOWLEDGED, doc);
    }
    
    /**

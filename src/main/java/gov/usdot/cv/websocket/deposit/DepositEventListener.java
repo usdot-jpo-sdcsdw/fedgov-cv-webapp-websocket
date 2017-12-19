@@ -9,6 +9,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.w3c.dom.Document;
 
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.PerXerCodec;
@@ -16,6 +17,7 @@ import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.CodecException;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.PerData;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.PerDataUnformatter;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.RawPerData;
+import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.DocumentXerData;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.RawXerData;
 import gov.usdot.cv.websocket.WebSocketClient;
 import gov.usdot.cv.websocket.WebSocketSSLHelper;
@@ -54,6 +56,7 @@ public class DepositEventListener implements WebSocketEventListener {
 	}
 	
 	public void close() {
+	    logger.debug("Depositor is closing");
 		for (MongoDepositor depositClient: depositClientMap.values()) {
 			depositClient.close();
 		}
@@ -66,11 +69,11 @@ public class DepositEventListener implements WebSocketEventListener {
 			message = message.substring(DEPOSIT_TAG.length()).trim();
 			JSONObject json = (JSONObject)JSONSerializer.toJSON(message);
 			try {
-				validateMessage(json);
+				Document xer = validateMessage(json);
 				String systemName = json.getString(SYSTEM_NAME);
 				MongoDepositor wsClient = depositClientMap.get(systemName);
 				if (wsClient != null) {
-				    wsClient.deposit(json);
+				    wsClient.deposit(json, xer);
 				    WebSocketServer.sendMessage(websocketID, "DEPOSITED:1");
 				} else {
 					// validateMessage should always catch this, but just in case
@@ -83,6 +86,8 @@ public class DepositEventListener implements WebSocketEventListener {
 				logger.error("Unexpected error depositing message ", e);
 				WebSocketServer.sendMessage(websocketID, "ERROR: " + e.getMessage());
 			}
+		} else {
+		    logger.debug("Deposit listner ignoring: " + message);
 		}
 	}
 
@@ -94,7 +99,7 @@ public class DepositEventListener implements WebSocketEventListener {
 		// do nothing
 	}
 	
-	public void validateMessage(JSONObject json) throws DepositException {
+	public Document validateMessage(JSONObject json) throws DepositException {
 		StringBuilder errorMsg = new StringBuilder();
 		if (json.containsKey(SYSTEM_NAME) && json.containsKey(ENCODE_TYPE) && json.containsKey(ENCODED_MSG)) {
 			String systemName = json.getString(SYSTEM_NAME);
@@ -126,7 +131,7 @@ public class DepositEventListener implements WebSocketEventListener {
 			if (bytes != null) {
 				try {
 					//PerXerCodec.guessPerToXer(Asn1Types.getAllTypes(), bytes, RawPerData.unformatter, RawXerData.formatter);
-					PerXerCodec.perToXer(Asn1Types.AdvisorySituationDataType, bytes, RawPerData.unformatter, RawXerData.formatter);
+					return PerXerCodec.perToXer(Asn1Types.AdvisorySituationDataType, bytes, RawPerData.unformatter, DocumentXerData.formatter);
 				} catch (CodecException e) {
 					errorMsg.append("Failed to decode message: " + e);
 				}
@@ -142,8 +147,6 @@ public class DepositEventListener implements WebSocketEventListener {
 				errorMsg.append(ENCODED_MSG).append(" ");
 		}
 		
-		if (errorMsg.length() > 0) {
-			throw new DepositException(errorMsg.toString());
-		}
+		throw new DepositException(errorMsg.toString());
 	}
 }

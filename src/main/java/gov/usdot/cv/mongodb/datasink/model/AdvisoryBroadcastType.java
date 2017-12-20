@@ -1,5 +1,10 @@
 package gov.usdot.cv.mongodb.datasink.model;
 
+/** Enum representing the types for an advisory broadcast 
+ * 
+ * @author amm30955
+ *
+ */
 public enum AdvisoryBroadcastType
 {
     spatAggregate   (0),
@@ -7,15 +12,18 @@ public enum AdvisoryBroadcastType
     tim             (2),
     ev              (3);
     
+    /** Get the integer representation of this enum */
     public int getCode()
     {
         return code;
     }
     
+    /** Create a new instance from the underlying integer */
     private AdvisoryBroadcastType(int code)
     {
         this.code = code;
     }
     
+    /** Underlying integer */
     private int code;
 }

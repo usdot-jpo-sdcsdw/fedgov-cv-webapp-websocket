@@ -13,11 +13,10 @@ import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.PerXerCodec;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.HexPerData;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.DocumentXerData;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.RawXerData;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-public class XmlToJsonTest
+public class XerToJsonTest
 {
 
     @Test
@@ -28,7 +27,7 @@ public class XmlToJsonTest
         
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(testXml.getBytes()));
         JSONObject expectedJson = (JSONObject)JSONSerializer.toJSON(testJson);
-        JSONObject actualJson = AdvisorySituationDataXmlToJson.xmlToJson(doc);
+        JSONObject actualJson = XerToJson.xmlToJson(doc);
         
         assertEquals(expectedJson, actualJson);
     }
@@ -41,7 +40,7 @@ public class XmlToJsonTest
         // {"AdvisorySituationData":{"dialogID":"advSitDataDep","seqID":"data","groupID":"00000000","requestID":"CB7605B2","timeToLive":"week","serviceRegion":{"nwCorner":{"lat":"449984590","long":"-1110408170"},"seCorner":{"lat":"411046740","long":"-1041113120"}},"asdmDetails":{"asdmID":"CB7605B2","asdmType":"tim","distType":"10","startTime":{"year":"2017","month":"12","day":"1","hour":"17","minute":"47"},"stopTime":{"year":"2018","month":"12","day":"1","hour":"17","minute":"47"},"advisoryMessage":"03805E001F5B70D07930EC9C236B00000000000F775D9B0301EA73E452D1539716C99E9D555100003F0BAD7580160307F82C5BF14005C00854E7C8A5A2A72E2D933D30579AAAA8B555508CE4539F22968A9CB8B64CF4C03F88600003E8F775D9B0"}}}
         Document xerDocument = PerXerCodec.perToXer(Asn1Types.AdvisorySituationDataType, testHexPer, HexPerData.unformatter, DocumentXerData.formatter);
         
-        JSONObject json = AdvisorySituationDataXmlToJson.xmlToJson(xerDocument);
+        JSONObject json = XerToJson.xmlToJson(xerDocument);
         
         System.out.println(json.toString());
         

@@ -7,9 +7,6 @@ import org.w3c.dom.Document;
 
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.PerXerCodec;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.CodecFailedException;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.FormattingFailedException;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.UnformattingFailedException;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.HexPerData;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.DocumentXerData;
 import net.sf.json.JSONArray;

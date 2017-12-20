@@ -7,28 +7,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.MongoOptions;
 import com.mongodb.WriteResult;
-import com.mongodb.util.JSON;
 
 import gov.usdot.cv.common.database.mongodb.MongoOptionsBuilder;
 import gov.usdot.cv.kluge.AsdCompleteXerParser;
 import gov.usdot.cv.kluge.GeoJsonBuilder;
-import gov.usdot.cv.kluge.GeoJsonExtractor;
-import gov.usdot.cv.kluge.TimeExtractor;
-import gov.usdot.cv.kluge.XerJsonParserException;
+import gov.usdot.cv.kluge.xerjsonparser.XerJsonParserException;
 import gov.usdot.cv.mongodb.datasink.model.DataModel;
-import gov.usdot.cv.mongodb.datasink.model.TimeToLive;
 import gov.usdot.cv.websocket.deposit.DepositException;
 import net.sf.json.JSONObject;
 
@@ -144,8 +136,10 @@ public class MongoDepositor
                 WriteResult result = null;
                 if (model.getQuery() != null) {
                     result = this.dao.upsert(config.collectionName, query, doc);
+                    logger.info(result.getN() + " records affected by update");
                 } else {
                     result = this.dao.insert(config.collectionName, doc);
+                    logger.info(result.getN() + " records affected by insert");
                 }
                 
                 return true;

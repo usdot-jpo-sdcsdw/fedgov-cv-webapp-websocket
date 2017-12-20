@@ -3,14 +3,25 @@ package gov.usdot.cv.kluge;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/** Static methods for building a GeoJSON polygon from an unpacked ASD  
+ * 
+ * @author amm30955
+ *
+ */
 public class GeoJsonBuilder
 {
+    /** Build a GeoJSON polygon from the NW and SE coordinates in an unpacked
+     * JSON ASD
+     * 
+     * @param src JSON object containing an unpacked ASD
+     * @return JSON object containing a GeoJSON polygon
+     */
     public static JSONObject buildGeoJson(JSONObject src)
     {
-        double north = src.getDouble(AsdCompleteXerParser.JsonFields.NW_LON);
-        double west = src.getDouble(AsdCompleteXerParser.JsonFields.NW_LAT);
-        double south = src.getDouble(AsdCompleteXerParser.JsonFields.SE_LON);
-        double east = src.getDouble(AsdCompleteXerParser.JsonFields.SE_LAT);
+        double north = src.getDouble(AsdCompleteXerParser.Fields.NW_LON.getField());
+        double west = src.getDouble(AsdCompleteXerParser.Fields.NW_LAT.getField());
+        double south = src.getDouble(AsdCompleteXerParser.Fields.SE_LON.getField());
+        double east = src.getDouble(AsdCompleteXerParser.Fields.SE_LAT.getField());
         
         
         JSONArray coordinates = new JSONArray();
@@ -31,6 +42,12 @@ public class GeoJsonBuilder
         return obj;
     }
     
+    /** Make a GeoJSON point from a longitude and latitude 
+     * 
+     * @param lon Longitude
+     * @param lat Latitude
+     * @return GeoJSON point
+     */
     private static JSONArray makeCoordinate(double lon, double lat)
     {
         JSONArray point = new JSONArray();

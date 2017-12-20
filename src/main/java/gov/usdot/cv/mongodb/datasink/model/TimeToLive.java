@@ -1,7 +1,5 @@
 package gov.usdot.cv.mongodb.datasink.model;
 
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 

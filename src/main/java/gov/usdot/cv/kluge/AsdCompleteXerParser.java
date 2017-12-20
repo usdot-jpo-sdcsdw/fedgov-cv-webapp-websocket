@@ -1,67 +1,64 @@
 package gov.usdot.cv.kluge;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+import gov.usdot.cv.kluge.xerjsonparser.FieldPathPair;
+import gov.usdot.cv.kluge.xerjsonparser.XerJsonExtractor;
+import gov.usdot.cv.kluge.xerjsonparser.XerJsonParserException;
+import gov.usdot.cv.kluge.xerjsonparser.XerJsonParsers;
 import gov.usdot.cv.mongodb.datasink.model.AdvisoryBroadcastType;
 import gov.usdot.cv.mongodb.datasink.model.DialogId;
 import gov.usdot.cv.mongodb.datasink.model.SequenceId;
 import gov.usdot.cv.mongodb.datasink.model.TimeToLive;
 import net.sf.json.JSONObject;
 
+/** Static methods for extracting ASD fields from XER into a JSON object
+ * 
+ * @author amm30955
+ *
+ */
 public class AsdCompleteXerParser
 {
-    
-    public static class JsonFields {
-        public static final String RECEIPT_ID           = "receiptId";
-        public static final String DIALOG_ID            = "dialogId";
-        public static final String SEQUENCE_ID          = "sequenceId";
-        public static final String GROUP_ID             = "groupId";
-        public static final String REQUEST_ID           = "requestId";
-        public static final String RECORD_ID            = "recordId";
-        public static final String TIME_TO_LIVE         = "timeToLive";
-        public static final String NW_LAT               = "nwLat";
-        public static final String NW_LON               = "nwLon";
-        public static final String SE_LAT               = "seLat";
-        public static final String SE_LON               = "seLon";
-        public static final String ASDM_ID              = "asdmId";
-        public static final String ASDM_TYPE            = "asdmType";
-        public static final String DIST_TYPE            = "distType";
-        public static final String START_TIME           = "startTime";
-        public static final String STOP_TIME            = "stopTime";
-        public static final String ADVISORY_MESSAGE     = "advisoryMessage";
-        public static final String ENCODED_MSG          = "encodedMsg";
-    }
-    
-    public static class XerFields {
-        // TODO: What is this?
-        //public static final String RECEIPT_ID           = "receiptId";
+    /** JSON keys and XER XPath Paths for each ASD field */
+    public static class Fields
+    {
+        //public static final FieldPathPair RECEIPT_ID
+        //    = new FieldPathPair("receiptId", );
+        public static final FieldPathPair DIALOG_ID
+            = new FieldPathPair("dialogId", MAKE_ASD_PATH("dialogID"));
+        public static final FieldPathPair SEQUENCE_ID 
+            = new FieldPathPair("sequenceId", MAKE_ASD_PATH("seqID"));
+        public static final FieldPathPair GROUP_ID
+            = new FieldPathPair("groupId", MAKE_ASD_PATH("groupID"));
+        public static final FieldPathPair REQUEST_ID
+            = new FieldPathPair("requestId", MAKE_ASD_PATH("requestID"));
+        public static final FieldPathPair RECORD_ID
+            = new FieldPathPair("recordId", MAKE_ASD_PATH("recordID"));
+        public static final FieldPathPair TIME_TO_LIVE
+            = new FieldPathPair("timeToLive", MAKE_ASD_PATH("timeToLive"));
+        public static final FieldPathPair NW_LAT
+            = new FieldPathPair("nwLat", MAKE_COORDINATE_PATH("nwCorner", "lat"));
+        public static final FieldPathPair NW_LON
+            = new FieldPathPair("nwLon", MAKE_COORDINATE_PATH("nwCorner", "long"));
+        public static final FieldPathPair SE_LAT
+            = new FieldPathPair("seLat", MAKE_COORDINATE_PATH("seCorner", "lat"));
+        public static final FieldPathPair SE_LON
+            = new FieldPathPair("seLon", MAKE_COORDINATE_PATH("seCorner", "long"));
+        public static final FieldPathPair ASDM_ID
+            = new FieldPathPair("asdmId", MAKE_ADVISORY_DETAILS_PATH("asdmID"));
+        public static final FieldPathPair ASDM_TYPE
+            = new FieldPathPair("asdmType", MAKE_ADVISORY_DETAILS_PATH("asdmType"));
+        public static final FieldPathPair DIST_TYPE
+            = new FieldPathPair("distType", MAKE_ADVISORY_DETAILS_PATH("distType"));
+        public static final FieldPathPair START_TIME
+            = new FieldPathPair("startTime", MAKE_ADVISORY_DETAILS_PATH("startTime"));
+        public static final FieldPathPair STOP_TIME
+            = new FieldPathPair("stopTime", MAKE_ADVISORY_DETAILS_PATH("stopTime"));
+        public static final FieldPathPair ADVISORY_MESSAGE
+            = new FieldPathPair("advisoryMessage", MAKE_ADVISORY_DETAILS_PATH("advisoryMessage"));
+            
         
-        
-        public static final String DIALOG_ID            = MAKE_ASD_PATH("dialogID");
-        public static final String SEQUENCE_ID          = MAKE_ASD_PATH("seqID");
-        public static final String GROUP_ID             = MAKE_ASD_PATH("groupID");
-        public static final String REQUEST_ID           = MAKE_ASD_PATH("requestID");
-        public static final String RECORD_ID            = MAKE_ASD_PATH("recordID");
-        public static final String TIME_TO_LIVE         = MAKE_ASD_PATH("timeToLive");
-        public static final String NW_LAT               = MAKE_COORDINATE_PATH("nwCorner", "lat");
-        public static final String NW_LON               = MAKE_COORDINATE_PATH("nwCorner", "long");
-        public static final String SE_LAT               = MAKE_COORDINATE_PATH("seCorner", "lat");
-        public static final String SE_LON               = MAKE_COORDINATE_PATH("seCorner", "long");
-        public static final String ASDM_ID              = MAKE_ADVISORY_DETAILS_PATH("asdmID");
-        public static final String ASDM_TYPE            = MAKE_ADVISORY_DETAILS_PATH("asdmType");
-        public static final String DIST_TYPE            = MAKE_ADVISORY_DETAILS_PATH("distType");
-        public static final String START_TIME           = MAKE_ADVISORY_DETAILS_PATH("startTime");
-        public static final String STOP_TIME            = MAKE_ADVISORY_DETAILS_PATH("stopTime");
-        public static final String ADVISORY_MESSAGE     = MAKE_ADVISORY_DETAILS_PATH("advisoryMessage");
-        
-        
+        /** The base of each XPath */
         private static final String ASD_PATH = "/AdvisorySituationData";
         
         private static final String MAKE_ASD_PATH(String path)
@@ -71,12 +68,6 @@ public class AsdCompleteXerParser
         
         private static final String SERVICE_REGION_PATH = "serviceRegion";
         
-        private static final String NW_CORNER = "nwCorner";
-        private static final String NE_CORNER = "neCorner";
-        private static final String SW_CORNER = "swCorner";
-        private static final String SE_CORNER = "seCorner";
-        private static final String LAT = "lat";
-        private static final String LONG = "long";
         private static final String MAKE_SERVICE_REGION_PATH(String path)
         {
             return MAKE_ASD_PATH(SERVICE_REGION_PATH + "/" + path);
@@ -95,8 +86,12 @@ public class AsdCompleteXerParser
         }
     }
     
-    
-    
+    /** Extract ASD fields from XER into JSON
+     * 
+     * @param target JSON object to unpack into
+     * @param xer XER to extract ASD fields from
+     * @throws XerJsonParserException If the XER was malformed
+     */
     public static void unpackAsdXer(JSONObject target, Document xer) throws XerJsonParserException
     {
         for (XerJsonExtractor extractor : extractors) {
@@ -104,26 +99,40 @@ public class AsdCompleteXerParser
         }
     }
     
-    private static final XPath xPath = XPathFactory.newInstance().newXPath();
+    /** Extract ASD fields from XER into JSON
+     * 
+     * @param xer XER to extract ASD fields from
+     * @throws XerJsonParserException If the XER was malformed
+     * @return The unpacked JSON object
+     */
+    public static JSONObject unpackAsdXer(Document xer) throws XerJsonParserException
+    {
+        JSONObject object = new JSONObject();
+        
+        unpackAsdXer(object, xer);
+        
+        return object;
+    }
     
-    
-    
+    /** Extractors for each field in an ASD
+     * 
+     */
     private static final XerJsonExtractor[] extractors = {
-        new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(DialogId::valueOf, DialogId::getCode), JsonFields.DIALOG_ID, XerFields.DIALOG_ID),
-        new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(SequenceId::valueOf, SequenceId::getCode), JsonFields.SEQUENCE_ID, XerFields.SEQUENCE_ID),
-        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, JsonFields.GROUP_ID, XerFields.GROUP_ID),
-        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, JsonFields.REQUEST_ID, XerFields.REQUEST_ID),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.HexIntXerJsonParser), JsonFields.RECORD_ID, XerFields.RECORD_ID),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.EnumXerJsonParser(TimeToLive::fromString)), JsonFields.TIME_TO_LIVE, XerFields.TIME_TO_LIVE),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), JsonFields.NW_LAT, XerFields.NW_LAT),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), JsonFields.NW_LON, XerFields.NW_LON),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), JsonFields.SE_LAT, XerFields.SE_LAT),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), JsonFields.SE_LON, XerFields.SE_LON),
-        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, JsonFields.ASDM_ID, XerFields.ASDM_ID),
-        new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(AdvisoryBroadcastType::valueOf), JsonFields.ASDM_TYPE, XerFields.ASDM_TYPE),
-        new XerJsonExtractor(XerJsonParsers.BitIntXerJsonParser, JsonFields.DIST_TYPE, XerFields.DIST_TYPE),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.DateXerJsonParser), JsonFields.START_TIME, XerFields.START_TIME),
-        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.DateXerJsonParser), JsonFields.STOP_TIME, XerFields.STOP_TIME),
-        new XerJsonExtractor(XerJsonParsers.StringXerJsonParser, JsonFields.ADVISORY_MESSAGE, XerFields.ADVISORY_MESSAGE),
+        new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(DialogId::valueOf, DialogId::getCode), Fields.DIALOG_ID),
+        new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(SequenceId::valueOf, SequenceId::getCode), Fields.SEQUENCE_ID),
+        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, Fields.GROUP_ID),
+        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, Fields.REQUEST_ID),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.HexIntXerJsonParser), Fields.RECORD_ID),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.EnumXerJsonParser(TimeToLive::fromString)), Fields.TIME_TO_LIVE),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), Fields.NW_LAT),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), Fields.NW_LON),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), Fields.SE_LAT),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), Fields.SE_LON),
+        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, Fields.ASDM_ID),
+        new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(AdvisoryBroadcastType::valueOf), Fields.ASDM_TYPE),
+        new XerJsonExtractor(XerJsonParsers.BitIntXerJsonParser, Fields.DIST_TYPE),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.DateXerJsonParser), Fields.START_TIME),
+        new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.DateXerJsonParser), Fields.STOP_TIME),
+        new XerJsonExtractor(XerJsonParsers.StringXerJsonParser, Fields.ADVISORY_MESSAGE),
     };
 }

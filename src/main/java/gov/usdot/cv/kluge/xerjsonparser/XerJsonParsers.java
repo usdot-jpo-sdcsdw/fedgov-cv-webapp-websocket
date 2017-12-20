@@ -1,9 +1,8 @@
-package gov.usdot.cv.kluge;
+package gov.usdot.cv.kluge.xerjsonparser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 import java.util.function.Function;
 
@@ -18,51 +17,61 @@ import org.w3c.dom.Node;
 
 import net.sf.json.JSONObject;
 
+/** Collection of parsers and utility methods for extracting JSON from XER
+ * 
+ * @author amm30955
+ *
+ */
 public class XerJsonParsers
 {
+    /** Parser for string fields */
     public static final XerJsonParser StringXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
         obj.put(field, getXerString(path, doc));
     };
     
+    /** Parser for base-10 long fields */
     public static final XerJsonParser LongXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
         obj.put(field, getXerLong(path, doc));
     };
     
+    /** Parser for base-16 int fields */
     public static final XerJsonParser HexIntXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
-        obj.put(field, getXerHexInt(path, doc));
+        obj.put(field, getXerInt(path, doc, 16));
     };
     
+    /** Parser for base-2 int fields */
     public static final XerJsonParser BitIntXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
-        obj.put(field, getXerBitInt(path, doc));
+        obj.put(field, getXerInt(path, doc, 2));
     };
     
+    /** Parser for double fields */
     public static final XerJsonParser DoubleXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
         obj.put(field, getXerDouble(path, doc));
     };
     
+    /** Parser for coordinates with a scaling factor of 1e7 */
     public static final XerJsonParser CoordinateXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
         obj.put(field, getXerCoordinate(path, doc));
     };
     
+    /** Parser for DFullTime fields */
     public static final XerJsonParser DateXerJsonParser = (JSONObject obj, String field, Document doc, String path) ->
     {
         obj.put(field, getXerDate(path, doc));
     };
     
-    /*public static final XerJsonParser EnumXerJsonParser(Function<String, Integer> nameMap)
-    {
-        return (JSONObject obj, String field, Document doc, String path) ->
-        {
-            obj.put(field, nameMap.apply(getXerEnum(path, doc)));
-        };
-    }*/
-    
+    /** Parser for enum fields which are not 1-to-1
+     * 
+     * @param nameMap Map from string values to enum values
+     * @param intMap Map from enum values to int values
+     * @return Parser
+     */
     public static final <E extends Enum<E>> XerJsonParser EnumXerJsonParser(Function<String, E> nameMap, Function<E, Integer> intMap)
     {
         return (JSONObject obj, String field, Document doc, String path) ->
@@ -71,6 +80,11 @@ public class XerJsonParsers
         };
     }
     
+    /** Parser for enum fields which are 1-to-1
+     * 
+     * @param nameMap Map from string values to enum values
+     * @return Parser
+     */
     public static final <E extends Enum<E>> XerJsonParser EnumXerJsonParser(Function<String, E> nameMap)
     {
         return (JSONObject obj, String field, Document doc, String path) ->
@@ -79,6 +93,11 @@ public class XerJsonParsers
         };
     }
     
+    /** Make a parser optional so that it will not fail if the field is missing, but still fail if it can't be parsed
+     * 
+     * @param parser Parser to make optional
+     * @return Optional version of the parser
+     */
     public static XerJsonParser optional(XerJsonParser parser)
     {
         return new XerJsonParser() {
@@ -98,9 +117,18 @@ public class XerJsonParsers
         };
     }
     
+    /** Reciprocal of the scaling factor for coordinates */
     private static double INVERSE_SCALING_FACTOR = 1e7;
+    /** XPath instance for extracting XER fields */
     private static final XPath xPath = XPathFactory.newInstance().newXPath();
     
+    /** Extract a string from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return String at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final String getXerString(String path, Document doc) throws XerJsonParserException
     {
         try {
@@ -115,21 +143,37 @@ public class XerJsonParsers
         }
     }
     
+    /** Extract an enum from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return Enum string at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final String getXerEnum(String path, Document doc) throws XerJsonParserException
     {
         try {
             Node node = (Node)xPath.evaluate(path, doc.getDocumentElement(), XPathConstants.NODE);
-            if (node.getFirstChild() != null && node.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
+            if (node == null) {
+                throw new XerJsonParserPathMissingException("No element at path: " + path);
+            } else if (node.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element)(node.getFirstChild());
                 return element.getTagName();
             } else {
-                return null;
+                throw new XerJsonParserBadTypeException("Node at path " + path + " was not an Enum node");
             }
         } catch (XPathExpressionException ex) {
             throw new RuntimeException("Internal error: Bad XPath", ex);
         }
     }
     
+    /** Extract a base-10 int from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return Integer at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final int getXerInt(String path, Document doc) throws XerJsonParserException
     {
         String stringValue = getXerString(path, doc);
@@ -140,26 +184,31 @@ public class XerJsonParsers
         }
     }
     
-    private static final int getXerHexInt(String path, Document doc) throws XerJsonParserException
+    /** Extract an int from XER with an arbitrary base
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @param radix Base of the integer to extract
+     * @return Integer at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
+    private static final int getXerInt(String path, Document doc, int radix) throws XerJsonParserException
     {
         String stringValue = getXerString(path, doc);
         try {
-            return Integer.parseUnsignedInt(stringValue, 16);
+            return Integer.parseUnsignedInt(stringValue, radix);
         } catch (NumberFormatException ex) {
-            throw new XerJsonParserBadTypeException("Could not parse " + stringValue + " at path " + path + " as a Hex Integer", ex);
+            throw new XerJsonParserBadTypeException("Could not parse " + stringValue + " at path " + path + " as a base-" + radix + " Integer", ex);
         }
     }
     
-    private static final int getXerBitInt(String path, Document doc) throws XerJsonParserException
-    {
-        String stringValue = getXerString(path, doc);
-        try {
-            return Integer.parseUnsignedInt(stringValue, 2);
-        } catch (NumberFormatException ex) {
-            throw new XerJsonParserBadTypeException("Could not parse " + stringValue + " at path " + path + " as a Bit Integer", ex);
-        }
-    }
-    
+    /** Extract a long from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return Long at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final long getXerLong(String path, Document doc) throws XerJsonParserException
     {
         String stringValue = getXerString(path, doc);
@@ -170,6 +219,13 @@ public class XerJsonParsers
         }
     }
     
+    /** Extract a double from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return Double at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final double getXerDouble(String path, Document doc) throws XerJsonParserException
     {
         String stringValue = getXerString(path, doc);
@@ -180,6 +236,13 @@ public class XerJsonParsers
         }
     }
     
+    /** Extract a Coordinate from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return Coordinate at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final double getXerCoordinate(String path, Document doc) throws XerJsonParserException
     {
         return getXerDouble(path, doc) / INVERSE_SCALING_FACTOR;
@@ -198,6 +261,13 @@ public class XerJsonParsers
         DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
     
+    /** Extract a Date from XER
+     * 
+     * @param path Path to extract
+     * @param doc Document to extract from
+     * @return Date at that path in the document
+     * @throws XerJsonParserException If the path could not be found
+     */
     private static final String getXerDate(String path, Document doc) throws XerJsonParserException
     {
         int year = getXerInt(path + "/" + YEAR_PART, doc);

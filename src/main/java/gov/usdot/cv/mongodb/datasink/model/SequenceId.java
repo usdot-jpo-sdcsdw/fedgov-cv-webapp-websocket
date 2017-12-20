@@ -13,15 +13,18 @@ public enum SequenceId
     subscriptinoResp    (9),
     subscriptionCancel  (10);
     
+    /** Get the integer representation of this enum */
     public int getCode()
     {
         return code;
     }
     
+    /** Create a new instance from the underlying integer */
     private SequenceId(int code)
     {
         this.code = code;
     }
     
+    /** Underlying integer */
     private int code;
 }

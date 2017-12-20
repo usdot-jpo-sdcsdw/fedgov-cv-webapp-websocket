@@ -8,19 +8,13 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.w3c.dom.Document;
 
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.PerXerCodec;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.exception.CodecException;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.PerData;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.PerDataUnformatter;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.per.RawPerData;
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.DocumentXerData;
-import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.xer.RawXerData;
-import gov.usdot.cv.websocket.WebSocketClient;
-import gov.usdot.cv.websocket.WebSocketSSLHelper;
 import gov.usdot.cv.websocket.mongo.MongoConfig;
 import gov.usdot.cv.websocket.mongo.MongoDepositor;
 import gov.usdot.cv.websocket.server.WebSocketEventListener;
@@ -116,7 +110,6 @@ public class DepositEventListener implements WebSocketEventListener {
 					append(", ").append(ENCODE_TYPE_BASE64).append(", ").append(ENCODE_TYPE_UPER);
 			}
 			
-			//PerDataUnformatter<String, ? extends PerData<String>> unformatter = null;
 			byte[] bytes = null;
 			if (encodeType.equalsIgnoreCase(ENCODE_TYPE_HEX) || encodeType.equalsIgnoreCase(ENCODE_TYPE_UPER)) {
 				try {

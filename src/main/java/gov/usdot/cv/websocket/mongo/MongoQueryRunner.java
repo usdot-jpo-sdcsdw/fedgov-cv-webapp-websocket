@@ -2,7 +2,6 @@ package gov.usdot.cv.websocket.mongo;
 
 import gov.usdot.cv.websocket.server.WebSocketServer;
 
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

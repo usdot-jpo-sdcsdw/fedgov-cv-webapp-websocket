@@ -17,6 +17,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 
+@SuppressWarnings("deprecation")
 public abstract class AbstractMongoDbDao {
     private final Logger logger = Logger.getLogger(getClass());
     

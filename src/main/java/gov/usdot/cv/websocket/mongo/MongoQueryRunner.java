@@ -28,6 +28,7 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
+@SuppressWarnings("deprecation")
 public class MongoQueryRunner {
 
     private static final Logger logger = Logger.getLogger(MongoQueryRunner.class

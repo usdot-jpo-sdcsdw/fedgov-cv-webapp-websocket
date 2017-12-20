@@ -6,6 +6,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoOptions;
 import com.mongodb.ServerAddress;
 
+@SuppressWarnings("deprecation")
 public class MongoClientBuilder {
     private static final String DEFAULT_HOST = "localhost";
     private static final int    DEFAULT_PORT = 27017;

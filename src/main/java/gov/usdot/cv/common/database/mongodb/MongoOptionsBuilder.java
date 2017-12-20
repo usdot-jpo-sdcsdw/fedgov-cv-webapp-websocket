@@ -2,6 +2,7 @@ package gov.usdot.cv.common.database.mongodb;
 
 import com.mongodb.MongoOptions;
 
+@SuppressWarnings("deprecation")
 public class MongoOptionsBuilder {
     
     private boolean autoConnectRetry = true;

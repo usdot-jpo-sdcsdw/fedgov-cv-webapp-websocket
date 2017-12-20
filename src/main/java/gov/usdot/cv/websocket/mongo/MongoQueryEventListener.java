@@ -13,8 +13,6 @@ import net.sf.json.JSONSerializer;
 import org.apache.log4j.Logger;
 
 public class MongoQueryEventListener implements WebSocketEventListener {
-
-	private final static String SYS_LOG_ID = "WebSocket QueryProcessor";
 	
 	private static final Logger logger = Logger.getLogger(MongoQueryEventListener.class
 			.getName());

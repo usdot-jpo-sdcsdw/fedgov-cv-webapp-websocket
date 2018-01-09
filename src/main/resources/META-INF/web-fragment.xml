@@ -5,7 +5,7 @@
 
 	<servlet>
 		<servlet-name>WebSocket</servlet-name>
-		<servlet-class>gov.usdot.cv.websocket.server.WebSocketServlet</servlet-class>
+		<servlet-class>gov.dot.its.jpo.sdcsdw.webfragment_websockets.server.WebSocketServlet</servlet-class>
 		<init-param>
             <param-name>maxIdleTime</param-name>
             <param-value>1800000</param-value>
@@ -18,7 +18,7 @@
 
 	<servlet>
 		<servlet-name>MongoProvider</servlet-name>
-		<servlet-class>gov.usdot.cv.websocket.mongo.MongoProviderServlet</servlet-class>
+		<servlet-class>gov.dot.its.jpo.sdcsdw.webfragment_websockets.mongo.MongoProviderServlet</servlet-class>
 		<init-param>
         	<param-name>mongoConfigFile</param-name>
         	<param-value>config/mongo.json</param-value>
@@ -47,7 +47,7 @@
 	
 	<servlet>
 		<servlet-name>DepositProvider</servlet-name>
-		<servlet-class>gov.usdot.cv.websocket.deposit.DepositProviderServlet</servlet-class>
+		<servlet-class>gov.dot.its.jpo.sdcsdw.webfragment_websockets.deposit.DepositProviderServlet</servlet-class>
 		<init-param>
         	<param-name>depositConfigFile</param-name>
         	<param-value>config/mongo.json</param-value>

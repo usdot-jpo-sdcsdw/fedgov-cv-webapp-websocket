@@ -6,24 +6,40 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>WebSocket Server WebApp</name>
 	<packaging>jar</packaging>
-	<!--<parent>
-		<groupId>gov.usdot</groupId>
-		<artifactId>fedgov-cv-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../fedgov-cv-parent/pom.xml</relativePath>
-	</parent> -->
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<jacoco.agent.argLine></jacoco.agent.argLine>
 	</properties>
+	<profiles>
+      <profile>
+        <id>osx</id>
+        <activation>
+          <os>
+            <family>mac</family>
+          </os>
+        </activation>
+        <properties>
+          <per-xer-codec-native-artifactId>per-xer-codec-native-osx</per-xer-codec-native-artifactId>
+          <per-xer-codec-native-type>dylib</per-xer-codec-native-type>
+        </properties>
+      </profile>
+      <profile>
+        <id>linux</id>
+        <activation>
+          <os>
+            <family>unix</family>
+            <name>Linux</name>
+          </os>
+        </activation>
+        <properties>
+          <per-xer-codec-native-artifactId>per-xer-codec-native-linux</per-xer-codec-native-artifactId>
+          <per-xer-codec-native-type>so</per-xer-codec-native-type>
+        </properties>
+      </profile>
+    </profiles>
+    
 	<dependencies>
-	   <!--
-		<dependency>
-			<groupId>gov.usdot</groupId>
-			<artifactId>fedgov-cv-common</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>gov.usdot</groupId>
 			<artifactId>fedgov-cv-websocket</artifactId>
@@ -167,13 +183,49 @@
 			</dependency>
 			<dependency>
 			    <groupId>gov.dot.its.jpo.sdcsdw</groupId>
-			    <artifactId>per-xer-codec</artifactId>
-			    <version>0.0.1-SNAPSHOT</version>
+			    <artifactId>per-xer-codec-java</artifactId>
+			    <version>1.0.0-SNAPSHOT</version>
 		    </dependency>
-			
 		</dependencies>
     <build>
         <plugins>
+        <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <version>3.0.2</version>
+              <executions>
+                <execution>
+                  <id>copy</id>
+                  <phase>compile</phase>
+                  <goals>
+                    <goal>copy</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>gov.dot.its.jpo.sdcsdw</groupId>
+                    <artifactId>${per-xer-codec-native-artifactId}</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                    <type>${per-xer-codec-native-type}</type>
+                    <overWrite>false</overWrite>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <destFileName>libper-xer-codec.${per-xer-codec-native-type}</destFileName>
+                  </artifactItem>
+                </artifactItems>
+              </configuration>
+            </plugin>
+            
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.19.1</version>
+              <configuration>
+                <argLine>-Djava.library.path=${project.build.directory} @{jacoco.agent.argLine}</argLine>
+              </configuration>
+            </plugin>
+        
+        
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-war-plugin</artifactId>
@@ -184,7 +236,15 @@
 			  <artifactId>jetty-maven-plugin</artifactId>
 			  <version><!--9.3.22.v20171030-->9.3.11.v20160721</version>
 			</plugin>
+			<plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.8.0</version>
+              <configuration>
+                <propertyName>jacoco.agent.argLine</propertyName>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
-	<description>A simple WebSocket Server implemented as a WebApp</description>
+	<description>A simple WebSocket Server implemented as a WebFragment</description>
 </project>

@@ -89,7 +89,13 @@ public class XerJsonParsers
     {
         return (JSONObject obj, String field, Document doc, String path) ->
         {
-            obj.put(field, nameMap.apply(getXerEnum(path, doc)).ordinal());
+            E enumValue = nameMap.apply(getXerEnum(path, doc));
+            
+            if (enumValue == null) {
+                throw new XerJsonParserBadTypeException("Not a valid enum, was not any of the possible values");
+            }
+            
+            obj.put(field, enumValue.ordinal());
         };
     }
     
@@ -156,6 +162,8 @@ public class XerJsonParsers
             Node node = (Node)xPath.evaluate(path, doc.getDocumentElement(), XPathConstants.NODE);
             if (node == null) {
                 throw new XerJsonParserPathMissingException("No element at path: " + path);
+            } else if (node.getFirstChild() == null) {
+                throw new XerJsonParserBadTypeException("Not a valid enum");
             } else if (node.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element)(node.getFirstChild());
                 return element.getTagName();
@@ -270,11 +278,25 @@ public class XerJsonParsers
      */
     private static final String getXerDate(String path, Document doc) throws XerJsonParserException
     {
-        int year = getXerInt(path + "/" + YEAR_PART, doc);
-        int month = getXerInt(path + "/" + MONTH_PART, doc);
-        int day = getXerInt(path + "/" + DAY_PART, doc);
-        int hour = getXerInt(path + "/" + HOUR_PART, doc);
-        int minute = getXerInt(path + "/" + MINUTE_PART, doc);
+        int year;
+        int month;
+        int day;
+        int hour;
+        int minute;
+        
+        try {
+            year = getXerInt(path + "/" + YEAR_PART, doc);
+            month = getXerInt(path + "/" + MONTH_PART, doc);
+            day = getXerInt(path + "/" + DAY_PART, doc);
+            hour = getXerInt(path + "/" + HOUR_PART, doc);
+            minute = getXerInt(path + "/" + MINUTE_PART, doc);
+        }
+        catch (XerJsonParserPathMissingException ex) {
+            throw new XerJsonParserBadTypeException("Not a valid date", ex);
+        }
+        catch (XerJsonParserBadTypeException ex) {
+            throw new XerJsonParserBadTypeException("Not a valid date", ex);
+        }
         
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         

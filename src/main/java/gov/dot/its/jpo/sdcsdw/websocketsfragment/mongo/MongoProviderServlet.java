@@ -1,3 +1,7 @@
+/** LEGACY CODE
+ * 
+ * This was salvaged in part or in whole from the Legacy System. It will be heavily refactored or removed.
+ */
 package gov.dot.its.jpo.sdcsdw.websocketsfragment.mongo;
 
 import gov.dot.its.jpo.sdcsdw.websocketsfragment.server.WebSocketServer;

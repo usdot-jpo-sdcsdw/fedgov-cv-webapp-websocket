@@ -41,7 +41,7 @@ The following instructions describe the procedure to fetch, build, and run the a
 * Maven: https://maven.apache.org/install.html
 * Git: https://git-scm.com/
 * Docker: https://docs.docker.com/engine/installation/
-* PER XER Codec: https://github.com/usdot-jpo-sdcsdw/per-xer-codec.git
+* PER XER Codec: https://github.com/usdot-jpo-sdcsdw/per-xer-codec
 
 ---
 ### Obtain the Source Code

@@ -2,6 +2,8 @@
 
 The fedgov-cv-webfragment-websocket project is a library containing a simple WebSocket Server implemented as a WebFragment.
 
+![Diagram](doc/images/fedgov-cv-webapp-websocket-diagram.png)
+
 <a name="toc"/>
 
 ## Table of Contents

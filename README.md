@@ -18,8 +18,6 @@ The fedgov-cv-webfragment-websocket project is a library containing a simple Web
 
 [V. Deploying](#deploying)
 
-[VI. CI/CD](#cicd)
-
 ---
 
 <a name="release-notes" id="release-notes"/>
@@ -71,14 +69,5 @@ mvn package
 ## V. Deploying
 
 As this project depends on the PER XER Codec, both the JAR file and the native shared object produced by that project need to be deployed according to its instructions. 
-
-<a name="cicd"/>
-
-## VI. CI/CD
-
-The project can be built using a Jenkins CI/CD server, equipped with the following plugins:
-* Pipeline: TBD
-* Maven: TBD
-* EnvInject: TBD
 
 </a>

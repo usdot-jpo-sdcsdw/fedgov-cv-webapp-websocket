@@ -51,7 +51,7 @@ The following instructions describe the procedure to fetch, build, and run the a
 Clone the source code from the GitHub repository using Git command:
 
 ```bash
-git clone TBD
+git clone https://github.com/usdot-jpo-sdcsdw/fedgov-cv-webapp-websocket.git
 ```
 
 <a name="building"/>

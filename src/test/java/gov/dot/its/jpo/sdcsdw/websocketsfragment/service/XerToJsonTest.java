@@ -47,5 +47,17 @@ public class XerToJsonTest
         
         //assertTrue(false);
     }
+    
+    @Test
+    public void testXmlToJSONASDOptionalDates() throws Exception
+    {
+        String testHexPer = "c44000000000001869f0001869f4a6e271e2965c4e4c880029b893c3a5971dd7c200000000ad9a010d0402000000000000bf612a100e5371307e8b2e2e6e9297206045f8826e2cb406000fca6e260fd165c5cdd252e016ed03020033165c728d4dc4db7b3165c68134dc4d0a57165c5f60cdc4c43602828c597148b53712c784c597132133712b1342164010c11088010400";
+        
+        Document xerDocument = PerXerCodec.perToXer(Asn1Types.AdvisorySituationDataType, testHexPer, HexPerData.unformatter, DocumentXerData.formatter);
+        
+        JSONObject json = XerToJson.xmlToJson(xerDocument);
+        
+        //System.out.println(json.toString());
+    }
 
 }

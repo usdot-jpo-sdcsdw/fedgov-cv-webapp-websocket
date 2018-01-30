@@ -285,6 +285,15 @@ public class XerJsonParsers
         int minute;
         
         try {
+            Node node = (Node)xPath.evaluate(path, doc.getDocumentElement(), XPathConstants.NODE);
+            if (node == null) {
+                throw new XerJsonParserPathMissingException("No element at path: " + path);
+            }
+        } catch (XPathExpressionException ex) {
+            throw new RuntimeException("Internal error: Bad XPath", ex);
+        }
+        
+        try {
             year = getXerInt(path + "/" + YEAR_PART, doc);
             month = getXerInt(path + "/" + MONTH_PART, doc);
             day = getXerInt(path + "/" + DAY_PART, doc);

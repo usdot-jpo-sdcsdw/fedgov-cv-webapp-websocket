@@ -76,7 +76,17 @@ public class XerJsonParsers
     {
         return (JSONObject obj, String field, Document doc, String path) ->
         {
-            obj.put(field, intMap.apply(nameMap.apply(getXerEnum(path, doc))));
+            E enumValue = nameMap.apply(getXerEnum(path, doc));
+            if (enumValue == null) {
+                throw new XerJsonParserBadTypeException("Not a valid enum");
+            }
+            
+            Integer intValue = intMap.apply(enumValue);
+            if (intValue == null) {
+                throw new XerJsonParserBadTypeException("Internal error: enum int conversion failed");
+            }
+            
+            obj.put(field, intValue);
         };
     }
     

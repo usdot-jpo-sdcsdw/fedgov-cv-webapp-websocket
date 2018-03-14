@@ -130,7 +130,7 @@ public class AsdCompleteXerParser
         new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.CoordinateXerJsonParser), Fields.SE_LON),
         new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, Fields.ASDM_ID),
         new XerJsonExtractor(XerJsonParsers.EnumXerJsonParser(AdvisoryBroadcastType::valueOf), Fields.ASDM_TYPE),
-        new XerJsonExtractor(XerJsonParsers.BitIntXerJsonParser, Fields.DIST_TYPE),
+        new XerJsonExtractor(XerJsonParsers.HexIntXerJsonParser, Fields.DIST_TYPE),
         new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.DateXerJsonParser), Fields.START_TIME),
         new XerJsonExtractor(XerJsonParsers.optional(XerJsonParsers.DateXerJsonParser), Fields.STOP_TIME),
         new XerJsonExtractor(XerJsonParsers.StringXerJsonParser, Fields.ADVISORY_MESSAGE),

@@ -43,7 +43,7 @@ public class AsdCompleteXerParserTest
         
         expectedJson.put(AsdCompleteXerParser.Fields.ASDM_ID.getField(), 0xCB7605B2);
         expectedJson.put(AsdCompleteXerParser.Fields.ASDM_TYPE.getField(), 2);
-        expectedJson.put(AsdCompleteXerParser.Fields.DIST_TYPE.getField(), 0b10);
+        expectedJson.put(AsdCompleteXerParser.Fields.DIST_TYPE.getField(), 0x10);
         
         try {
             expectedJson.put(AsdCompleteXerParser.Fields.START_TIME.getField(),

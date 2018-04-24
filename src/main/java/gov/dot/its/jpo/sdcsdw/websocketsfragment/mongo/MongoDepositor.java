@@ -5,6 +5,7 @@
 package gov.dot.its.jpo.sdcsdw.websocketsfragment.mongo;
 
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,8 +80,9 @@ public class MongoDepositor
         dao.close();
     }
     
-    public boolean deposit(JSONObject json, Document xer) throws DepositException {
+    public void deposit(JSONObject json, Document xer) throws DepositException {
         int retries = 3;
+        Exception lastException = null;
         while (retries >= 0) {
             try {
                 try {
@@ -91,20 +93,24 @@ public class MongoDepositor
                 
                 json.put(GEOJSON_FIELD_NAME, GeoJsonBuilder.buildGeoJson(json));
                 
-                
-                DataModel model = new DataModel(
-                    json,
-                    config.ttlFieldName, 
-                    config.ignoreMessageTTL,
-                    config.ttlValue, 
-                    config.ttlUnit);
+                DataModel model;
+                try {
+                    model = new DataModel(
+                        json,
+                        config.ttlFieldName, 
+                        config.ignoreMessageTTL,
+                        config.ttlValue, 
+                        config.ttlUnit);
+                } catch (ParseException ex) {
+                    throw new DepositException("Could not build the data model due to a parsing error", ex);
+                }
                 
                 BasicDBObject query = model.getQuery();
                 BasicDBObject doc = model.getDoc();
                 
                 if (!doc.containsField(ENCODED_MSG)) {
                     logger.error("Missing " + ENCODED_MSG + " in record " + json);
-                    return false;
+                    throw new DepositException("An internal error occurred");
                 }
                 
                 WriteResult result = null;
@@ -116,12 +122,13 @@ public class MongoDepositor
                     logger.info(result.getN() + " records affected by insert");
                 }
                 
-                return true;
+                return;
                 
             } catch (DepositException ex) {
                 throw ex;
             } catch (Exception ex) {
                 logger.error(String.format("Failed to store record into MongoDB. Message: %s", ex.toString()), ex);
+                lastException = ex;
             } finally {
                 retries--;
             }
@@ -130,7 +137,6 @@ public class MongoDepositor
         }
         
         logger.error("Failed to store record into MongoDB, retries exhausted. Record: " + json.toString());
-        
-        return false;
+        throw new DepositException("Failed to store record into MongoDB, retries exhausted. Record: " + json.toString(), lastException);
     }
 }

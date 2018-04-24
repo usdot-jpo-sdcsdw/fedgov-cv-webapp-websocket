@@ -48,7 +48,7 @@ public class CloseableInsertSitDataDao extends  AbstractMongoDbDao
     */
    public WriteResult upsert(String collectionName, DBObject query, DBObject doc) {
        DBCollection collection = get(collectionName);
-       return collection.update(query, doc, true, false);
+       return collection.update(query, doc, true, false, WriteConcern.ACKNOWLEDGED);
    }
    
    /**

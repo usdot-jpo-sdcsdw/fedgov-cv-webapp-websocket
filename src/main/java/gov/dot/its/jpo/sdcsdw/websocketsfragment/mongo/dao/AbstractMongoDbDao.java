@@ -13,7 +13,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -23,7 +24,7 @@ import com.mongodb.Mongo;
 
 @SuppressWarnings("deprecation")
 public abstract class AbstractMongoDbDao {
-    private final Logger logger = Logger.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     
     protected static final String EXPIRE_AFTER_SECONDS_FIELD    = "expireAfterSeconds";
     protected static final String GEOSPATIAL_INDEX_VALUE        = "2dsphere";

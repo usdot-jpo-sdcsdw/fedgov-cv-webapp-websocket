@@ -19,6 +19,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <jacoco.agent.argLine />
     <argLine />
+    <jetty.version>9.4.12.v20180830</jetty.version>
   </properties>
 
   <profiles>
@@ -83,7 +84,7 @@
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-servlet</artifactId>
-      <version>9.3.11.v20160721</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -127,11 +128,11 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
+<!--     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.16</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
@@ -152,18 +153,18 @@
       <artifactId>ezmorph</artifactId>
       <version>1.0.6</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
+      <version>${jetty.version}</version>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.6.4</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.6.4</version>
@@ -174,41 +175,46 @@
           <groupId>log4j</groupId>
         </exclusion>
       </exclusions>
+    </dependency> -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+      <version>2.10.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-war-plugin</artifactId>
       <version>3.2.0</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
+      <version>${jetty.version}</version>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-io</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
+      <version>${jetty.version}</version>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
-    <dependency>
+      <version>${jetty.version}</version>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
-      <version>9.3.11.v20160721</version>
-    </dependency>
+      <version>${jetty.version}</version>
+    </dependency> -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.3.11.v20160721</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
-      <version>9.3.11.v20160721</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>gov.dot.its.jpo.sdcsdw</groupId>
@@ -268,7 +274,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version><!--9.3.22.v20171030-->9.3.11.v20160721</version>
+        <version>${jetty.version}</version>
       </plugin>
 
       <plugin>

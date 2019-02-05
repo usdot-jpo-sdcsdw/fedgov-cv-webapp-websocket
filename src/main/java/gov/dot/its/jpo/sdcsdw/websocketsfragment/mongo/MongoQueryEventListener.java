@@ -11,14 +11,15 @@ import java.util.Map;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.dot.its.jpo.sdcsdw.websocketsfragment.server.WebSocketEventListener;
 import gov.dot.its.jpo.sdcsdw.websocketsfragment.server.WebSocketServer;
 
 public class MongoQueryEventListener implements WebSocketEventListener {
 	
-	private static final Logger logger = Logger.getLogger(MongoQueryEventListener.class
+	private static final Logger logger = LoggerFactory.getLogger(MongoQueryEventListener.class
 			.getName());
 	private final static String QUERY_TAG = "QUERY:";
 	private final static String SYSTEM_NAME = "systemQueryName";

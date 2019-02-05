@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.mongodb.BasicDBObject;
@@ -29,7 +30,7 @@ import net.sf.json.JSONObject;
 @SuppressWarnings("deprecation")
 public class MongoDepositor
 {
-    private static final Logger logger = Logger.getLogger(MongoDepositor.class
+    private static final Logger logger = LoggerFactory.getLogger(MongoDepositor.class
                                                           .getName());
     
     private static final String ENCODED_MSG = "encodedMsg";

@@ -11,12 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class ConfigUtils {
 
-	private static Logger logger = Logger.getLogger(ConfigUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(ConfigUtils.class);
 	private static final ObjectMapper mapper;
 	
 	static {
@@ -74,7 +75,7 @@ public class ConfigUtils {
 			try {
 				is = new FileInputStream(f);
 			} catch (FileNotFoundException e) {
-				logger.warn(e);
+				logger.warn("Got exception while opening file as stream", e);
 			} /*finally {
 				if ( is != null ) {
 					try {

@@ -18,7 +18,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -35,7 +36,7 @@ import gov.dot.its.jpo.sdcsdw.websocketsfragment.server.WebSocketServer;
 @SuppressWarnings("deprecation")
 public class MongoQueryRunner {
 
-    private static final Logger logger = Logger.getLogger(MongoQueryRunner.class
+    private static final Logger logger = LoggerFactory.getLogger(MongoQueryRunner.class
                                                           .getName());
                                                   
     private static final Map<Integer, String> collectionLookup = new HashMap<Integer, String>();
@@ -305,7 +306,7 @@ public class MongoQueryRunner {
 			return json;
 			
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Got exception while validating message", e);
 			throw new InvalidQueryException(e);
 		}
 	}

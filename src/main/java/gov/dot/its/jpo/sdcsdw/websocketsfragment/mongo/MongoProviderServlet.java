@@ -12,11 +12,12 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MongoProviderServlet extends HttpServlet {
 	
-	private static final Logger logger = Logger.getLogger(MongoProviderServlet.class
+	private static final Logger logger = LoggerFactory.getLogger(MongoProviderServlet.class
 			.getName());
 	
 	private static final long serialVersionUID = -2437352381953355241L;

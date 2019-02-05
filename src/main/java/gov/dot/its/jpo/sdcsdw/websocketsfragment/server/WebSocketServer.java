@@ -14,7 +14,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -23,7 +24,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 public class WebSocketServer {
 	
-	private static Logger logger = Logger.getLogger(WebSocketServer.class);
+	private static Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
 	
 	private static final List<WebSocketEventListener> eventListeners = new CopyOnWriteArrayList<WebSocketEventListener>();
 	private static final Map<String, CVWebSocket> webSocketMap = new ConcurrentHashMap<String, CVWebSocket>(16, 0.9f, 1);

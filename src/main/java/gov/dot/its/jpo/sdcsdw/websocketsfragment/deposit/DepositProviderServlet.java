@@ -13,11 +13,12 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DepositProviderServlet extends HttpServlet {
 	
-	private static final Logger logger = Logger.getLogger(DepositProviderServlet.class
+	private static final Logger logger = LoggerFactory.getLogger(DepositProviderServlet.class
 			.getName());
 	
 	private static final long serialVersionUID = 7267082140595016324L;

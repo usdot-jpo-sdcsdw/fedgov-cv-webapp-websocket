@@ -11,7 +11,8 @@ import java.util.Map;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import gov.dot.its.jpo.sdcsdw.asn1.perxercodec.Asn1Types;
@@ -28,7 +29,7 @@ import net.sf.json.JSONSerializer;
 
 public class DepositEventListener implements WebSocketEventListener {
 
-	private static final Logger logger = Logger.getLogger(DepositEventListener.class
+	private static final Logger logger = LoggerFactory.getLogger(DepositEventListener.class
 			.getName());
 	private final static String DEPOSIT_TAG = "DEPOSIT:";
 	private final static String SYSTEM_NAME = "systemDepositName";
